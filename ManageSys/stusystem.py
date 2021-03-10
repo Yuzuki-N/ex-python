@@ -1,4 +1,7 @@
+import os
+
 filename = "student.txt"
+
 
 def menu():
     print("============================学生信息管理系统===========================")
@@ -70,16 +73,78 @@ def insert():
     save(student_list)
     print("学生信息录入完毕！\n")
 
+
 def search():
     pass
 
 
 def delete():
-    pass
+    while True:
+        student_id = input("请输入要删除学生的id")
+        if student_id != '':
+            if os.path.exists(filename):
+                with open(filename, 'r') as file:
+                    student_old = file.readlines()
+            else:
+                student_old = []
+            flag = False
+            if student_old:
+                with open(filename, 'w') as wfile:
+                    d = {}
+                    for item in student_old:
+                        d = dict(eval(item))
+                        if d['id'] != student_id:
+                            wfile.write(str(d) + '\n')
+                        else:
+                            flag = True
+                    if flag:
+                        print(f'id 为 {student_id} 的学生已经被删除啦')
+                    else:
+                        print(f"没有找到id为 {student_id} 的学生")
+            else:
+                print("无学生信息")
+                break
+            show()
+            answer = input("是否继续删除y/n?\n")
+            if answer == 'y':
+                continue
+            else:
+                break
 
 
 def modify():
-    pass
+    show()
+    if os.path.exists(filename):
+        with open(filename, 'r') as file:
+            student_old = file.readlines()
+    else:
+        return
+
+    student_id = input("请输入要修改学员的id")
+    with open(filename, 'w') as file:
+        for item in student_old:
+            d = dict(eval(item))
+            if d['id'] == student_id:
+                print("找到学生了，可以修改信息了")
+                while True:
+                    try:
+                        d['name'] = input("请输入姓名")
+                        d['english'] = input("请输入英语成绩")
+                        d['python'] = input("请输入python成绩")
+                        d['java'] = input("请输入java成绩")
+                    except:
+                        print("您的输入有误，请重新输入")
+                    else:
+                        break
+                file.write(str(d) + '\n')
+                print("修改成功")
+            else:
+                file.write(str(d) + '\n')
+            answer = input("是否要继续修改其他学生的信息呢？y/n\n")
+            if answer == 'y':
+                continue
+            else:
+                break
 
 
 def sort():
